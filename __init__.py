@@ -4,160 +4,199 @@ knowledge of CSS (mainly CSS), Javascript (if you want advanced functionality), 
 It can integrate with any front-end or back-end resource."""
 
 
-__HTMLCode = """<!DOCTYPE html>
+class App:
+    """
+    Main class of griffin.
+    """
+
+    def __init__(self, filename: str) -> None:
+        from os.path import abspath, dirname
+        from os import system
+        system(f'cd {abspath(dirname(filename))}')
+        self.__HTMLCode = """<!DOCTYPE html>
 <html>
 """
-apps = {}
+        self.__approute = ''
 
 
-def get_html_source_code():
-    return __HTMLCode
+    def get_html_source_code(self):
+        return self.__HTMLCode
 
 
-def currentwebpage():
-    """
-    Alias of get_html_source_code. Used like this: griffin.apps['appname'] = currentwebpage()
+    def Comment(self, comment: str):
+        self.__HTMLCode += f"""<!--{comment}-->
+"""
+    
+    
+    def register(self, urlroute: str):
+        """Registers an app by creating a directory.
 
-    Returns:
-        str: Source code of webpage
-    """
-    return get_html_source_code()
+        Args:
+            urlroute (str): The route for the url.
+        """
+        from os import mkdir
+        self.__HTMLCode += '</html>'
+        if urlroute != '/':
+            try:
+                mkdir(urlroute[1:len(urlroute)])
+            except:
+                pass
+            self.__approute = urlroute[1:] + 'index.html'
+            open(self.__approute, 'w').write(self.__HTMLCode)
+        else:
+            self.__approute = 'index.html'
+            open(self.__approute, 'w').write(self.__HTMLCode)
 
 
-def Image(url: str, alternatetext: str, Javascriptid='', CSSid='', headers=''):
-    global __HTMLCode
-    __HTMLCode += f"""<img src="{url}" alt="{alternatetext}" id="{Javascriptid}" class="{CSSid}" {headers}>
+    def Image(self, url: str, alternatetext: str, Javascriptid='', CSSid='', headers=''):
+        self.__HTMLCode += f"""<img src="{url}" alt="{alternatetext}" id="{Javascriptid}" class="{CSSid}" {headers}>
 """
 
 
-def Video(localurl: str, width=500, height=500, autoplay='true', Javascriptid='', CSSid='', headers=''):
-    global __HTMLCode
-    __HTMLCode += f"""<video src="{localurl}" width="{width}" height="{height}" autoplay="{autoplay}" id="{Javascriptid}" class="{CSSid}" {headers}></video>
+    def Video(self, localurl: str, width=500, height=500, autoplay='true', Javascriptid='', CSSid='', headers=''):
+        self.__HTMLCode += f"""<video src="{localurl}" width="{width}" height="{height}" autoplay="{autoplay}" id="{Javascriptid}" class="{CSSid}" {headers}></video>
 """
 
 
-def CSS(CSSstyle: str, headers=''):
-    global __HTMLCode
-    __HTMLCode += f"""<style {headers}>
-{CSSstyle}
+    def CSS(self, CSSstyle: str, headers=''):
+        self.__HTMLCode += f"""<style {headers}>
+    {CSSstyle}
 </style>"""
 
 
-def JavaScript(JavaScript: str, headers=''):
-    global __HTMLCode
-    """Note: Cannot work with griffin.runserver"""
-    __HTMLCode += f"""<script {headers}>
-{JavaScript}
+    def JavaScript(self, JavaScript: str, headers=''):
+        self.__HTMLCode += f"""<script type="text/javascript" {headers}>
+    {JavaScript}
 </script>"""
 
 
-def Articlebox(articlecontent: str, Javascriptid='', CSSid='', headers=''):
-    global __HTMLCode
-    __HTMLCode += f"""<article id="{Javascriptid}" class="{CSSid}" {headers}>{articlecontent}</article>"""
-
-
-def Sidebar(sidebarcontent: str, Javascriptid='', CSSid='', headers=''):
-    global __HTMLCode
-    __HTMLCode += f"""<aside id="{Javascriptid}" class="{CSSid}" {headers}>{sidebarcontent}</aside>"""
-
-
-def Audio(url: str, ifnotsupportedtext: str, loopaudio: bool, Javascriptid='', CSSid='', headers=''):
-    global __HTMLCode
-    if loopaudio:
-        __HTMLCode += f"""<audio src="{url}" loop id="{Javascriptid}" class="{CSSid}" {headers}>{ifnotsupportedtext}</audio>"""
-    
-
-def DirectedText(text: str, direction: str, Javascriptid='', CSSid='', headers=''):
-    global __HTMLCode
-    d = direction.lower()
-    if d == 'right':
-        __HTMLCode += f"""<bdo dir="ltr" id="{Javascriptid}" class="{CSSid}" {headers}>{text}</bdo>"""
-    elif d == 'left':
-        __HTMLCode += f"""<bdo dir="rtl" id="{Javascriptid}" class="{CSSid}" {headers}>{text}</bdo>"""
-
-
-def Hyperlink(url: str, text: str, seperatetab: bool, Javascriptid='', CSSid='', headers=''):
-    global __HTMLCode
-    if seperatetab:
-        parameter = 'target="_blank"'
-    elif not seperatetab:
-        parameter = ''
-    __HTMLCode += f"""<a href="{url}" {parameter} id="{Javascriptid}" class="{CSSid}" {headers}>{text}</a>
+    def Articlebox(self, articlecontent: str, Javascriptid='', CSSid='', headers=''):
+        self.__HTMLCode += f"""<article id="{Javascriptid}" class="{CSSid}" {headers}>{articlecontent}</article>
 """
 
 
-def Quote(quotetext: str, quoteurl: str, Javascriptid='', CSSid='', headers=''):
-    global __HTMLCode
-    __HTMLCode += f"""<blockquote cite="{quoteurl}" id="{Javascriptid}" CSSid="{CSSid}" {headers}>{quotetext}</blockquote>
+    def Sidebar(self, sidebarcontent: str, Javascriptid='', CSSid='', headers=''):
+        self.__HTMLCode += f"""<aside id="{Javascriptid}" class="{CSSid}" {headers}>{sidebarcontent}</aside>
 """
 
 
-def DocumentContent(content: str, Javascriptid='', CSSid='', headers=''):
-    global __HTMLCode
-    __HTMLCode += f"""<body id="{Javascriptid}" class="{CSSid}" {headers}>{content}</body>
+    def Audio(self, url: str, ifnotsupportedtext: str, loopaudio: bool, Javascriptid='', CSSid='', headers=''):
+        if loopaudio:
+            self.__HTMLCode += f"""<audio src="{url}" loop id="{Javascriptid}" class="{CSSid}" {headers}>{ifnotsupportedtext}</audio>
+"""
+        elif not loopaudio:
+            self.__HTMLCode += f"""<audio src="{url}" id="{Javascriptid}" class="{CSSid}" {headers}>{ifnotsupportedtext}</audio>
+"""
+        
+
+    def DirectedText(self, text: str, direction: str, Javascriptid='', CSSid='', headers=''):
+        d = direction.lower()
+        if d == 'right':
+            self.__HTMLCode += f"""<bdo dir="ltr" id="{Javascriptid}" class="{CSSid}" {headers}>{text}</bdo>
+"""
+        elif d == 'left':
+            self.__HTMLCode += f"""<bdo dir="rtl" id="{Javascriptid}" class="{CSSid}" {headers}>{text}</bdo>
 """
 
 
-def NewLine(Javascriptid='', CSSid='', headers=''):
-    global __HTMLCode
-    __HTMLCode += f"""<br id="{Javascriptid}" class="{CSSid}" {headers}>
+    def Hyperlink(self, url: str, text: str, seperatetab: bool, textifhovered: str, Javascriptid='', CSSid='', headers=''):
+        if seperatetab:
+            parameter = 'target="_blank"'
+        elif not seperatetab:
+            parameter = ''
+        self.__HTMLCode += f"""<a href="{url}" {parameter} id="{Javascriptid}" class="{CSSid}" title="{textifhovered}" {headers}>{text}</a>
 """
 
 
-def Button(buttontext: str, buttonname: str, buttontype: str, javascriptonclick: str, buttonvalue='', Javascriptid='', CSSid='', headers=''):
-    global __HTMLCode
-    __HTMLCode += f"""<button name="{buttonname}" type="{buttontype}" onclick="{javascriptonclick}" value="{buttonvalue}" id="{Javascriptid}" class="{CSSid}" {headers}>{buttontext}</button>
+    def Quote(self, quotetext: str, quoteurl: str, Javascriptid='', CSSid='', headers=''):
+        self.__HTMLCode += f"""<blockquote cite="{quoteurl}" id="{Javascriptid}" CSSid="{CSSid}" {headers}>{quotetext}</blockquote>
 """
 
 
-def CanvasScreen(Javascriptid='', CSSid='', headers=''):
-    global __HTMLCode
-    __HTMLCode += f"""<canvas id="{Javascriptid}" class="{CSSid}" {headers}></canvas>
+    def DocumentContent(self, content: str, Javascriptid='', CSSid='', headers=''):
+        self.__HTMLCode += f"""<body id="{Javascriptid}" class="{CSSid}" {headers}>{content}</body>
 """
 
 
-def TableTitle(titletext: str, Javascriptid='', CSSid='', headers=''):
-    global __HTMLCode
-    __HTMLCode += f"""<caption id="{Javascriptid}" class="{CSSid}" {headers}>{titletext}</caption>
+    def NewLine(self, Javascriptid='', CSSid='', headers=''):
+        self.__HTMLCode += f"""<br id="{Javascriptid}" class="{CSSid}" {headers}>
+"""
+
+
+    def Button(self, buttontext: str, buttonname: str, buttontype: str, javascriptonclick: str, buttonvalue='', Javascriptid='', CSSid='', headers=''):
+        self.__HTMLCode += f"""<button name="{buttonname}" type="{buttontype}" onclick="{javascriptonclick}" value="{buttonvalue}" id="{Javascriptid}" class="{CSSid}" {headers}>{buttontext}</button>
+"""
+
+
+    def CanvasScreen(self, Javascriptid='', CSSid='', headers=''):
+        self.__HTMLCode += f"""<canvas id="{Javascriptid}" class="{CSSid}" {headers}></canvas>
+"""
+
+
+    def TableTitle(self, titletext: str, Javascriptid='', CSSid='', headers=''):
+        self.__HTMLCode += f"""<caption id="{Javascriptid}" class="{CSSid}" {headers}>{titletext}</caption>
 """
 
 
 
-def Text(text: str, Javascriptid='', CSSid='', headers=''):
-    global __HTMLCode
-    __HTMLCode += f"""<pre id="{Javascriptid}" class="{CSSid}" {headers}>{text}</pre>
+    def Text(self, text: str, size='defult', Javascriptid='', CSSid='', headers=''):
+        if size == 'defult':
+            self.__HTMLCode += f"""<pre id="{Javascriptid}" class="{CSSid}" {headers}>{text}</pre>
+"""
+        else:
+            self.__HTMLCode += f"""<h{size} id="{Javascriptid}" class="{CSSid}" {headers}>{text}</h{size}>
 """
 
 
-def help():
+class Griffin(App):
     """
-    Some help for griffin. All you need to do is call this function.
+    The clone of griffin.App()
+    """
+    pass
+
+
+def tips_and_help():
+    """
+    Some tips and help for griffin. All you need to do is call this function.
     """
     print('@%  Griffin (https://github.com/zachyboy12/griffin)  @%')
     print('''To create an app, type in (with 'appname' replaced with your app name):
-griffin.apps['appname'] = griffin.currentwebpage()
+griffin.register_app('appname')
+To make the app the homepage, type in:
+griffin.register_app('')
+Or:
+griffin.register_app('/')
 To make an http server, type in (With 'port' replaced with your port number (or none at all, since this is optional)):
 griffin.runserver(4567)''')
-    print('An Element in griffin means anything in the webpage, like text, a button, even an invisible canvas!')
-    print('Copyright @ zachyboy12 (https://github.com/zachyboy12), all rights reserved.')
+    print('An Emmiter in griffin means anything in the webpage, like text, a button, even an invisible canvas: Because it emmits an HTTP response!')
+    print('A Shape in griffin is an HTML element for reuse for python.')
+    print('Views in griffin are called a percent. A parent directory for a percent is called the percent root. Griffin is used to make percents.')
+        
+        
+def getshapetext(appname: str, Javascriptidname: str):
+    linein = False
+    thisline = ''
+    for line in open(appname + '/index.html').read().split('\n'):
+        if Javascriptidname in line:
+            thisline = line
+            linein = True
+            break
+    if linein is True:
+        return str(thisline).split('<')[1][thisline.find('>'):]
 
-
-
-
+    
+    
 def runserver(port=8000):
-    global __HTMLCode
-    from os import system, mkdir
+    """Runs a server at the givin port. After doing this, will make a new tab in your browser with the server url. *NOT FOR PRODUCTION*
+
+    Args:
+        port (int, optional): The port number. Defaults to 8000.
+    """
+    from os import system
     from webbrowser import open_new_tab as newtab
-    for appname in apps:
-        __HTMLCode += '</html>'
-        if appname != '/':
-            try:
-                mkdir(appname)
-            except:
-                pass
-            open(appname + '/index.html', 'w').write(__HTMLCode)
-            newtab(f'http://127.0.0.1:{port}/' + appname)
-        else:
-            open('index.html', 'w').write(__HTMLCode)
-            newtab(f'http://127.0.0.1:{port}/')
-        system(f'python3 -m http.server {port} --bind 127.0.0.1')
+    
+    print("""!!!! GRIFFIN SERVER !!!!
+* WARNING: THIS SERVER IS NOT FOR PRODUCTION. USE A WSGI SERVER *
+Running server...""")
+    newtab(f'http://127.0.0.1:{port}/')
+    system(f'python3 -m http.server {port} --bind 127.0.0.1')
